@@ -341,6 +341,30 @@ uvicorn app.main:app \
 
 Without these flags, `request.client.host` will always report the proxy's IP rather than the actual client IP.
 
+## Resource Limits
+
+Control connection and request limits to prevent resource exhaustion in production:
+
+```bash
+uvicorn app.main:app \
+    --limit-concurrency 100 \
+    --limit-max-requests 10000 \
+    --timeout-keep-alive 5 \
+    --host 0.0.0.0 --port 8000
+```
+
+| Option                    | Default       | Description                                                    |
+|---------------------------|---------------|----------------------------------------------------------------|
+| `--limit-concurrency`     | none          | Maximum number of concurrent connections before rejecting new ones. |
+| `--limit-max-requests`    | none          | Maximum requests per worker before restarting (guards against memory leaks). |
+| `--timeout-keep-alive`    | `5`           | Seconds to wait for a new request on a keep-alive connection.  |
+| `--timeout-notify`        | `30`          | Seconds to wait for graceful shutdown of a worker.             |
+| `--backlog`               | `2048`        | Maximum length of the pending connections queue.               |
+
+Set `--limit-max-requests` in production to guard against gradual memory leaks. Combine with `--workers` so that restarting one worker does not drop all traffic.
+
+---
+
 ## Common Patterns
 
 ### Integration with uv

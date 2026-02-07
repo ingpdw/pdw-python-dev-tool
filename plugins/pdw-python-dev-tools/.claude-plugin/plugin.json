@@ -1,12 +1,12 @@
 {
   "name": "pdw-python-dev-tools",
-  "version": "1.0.0",
-  "description": "Python/FastAPI full-stack development skills: package-managing, asgi-server, app-scaffolding, async-patterns, pydantic, agent-workflow, docker-build, and test-runner",
+  "version": "1.1.0",
+  "description": "Python/FastAPI full-stack development skills: package-managing, asgi-server, app-scaffolding, async-patterns, pydantic, agent-workflow, docker-build, test-runner, database, and auth-security",
   "author": {
     "name": "ingpdw"
   },
   "homepage": "https://github.com/ingpdw/pdw-python-dev-tools-marketplace",
   "repository": "https://github.com/ingpdw/pdw-python-dev-tools-marketplace",
   "license": "MIT",
-  "keywords": ["python", "fastapi", "uv", "uvicorn", "pydantic", "langchain", "langgraph", "docker", "async", "pytest", "testing"]
+  "keywords": ["python", "fastapi", "uv", "uvicorn", "pydantic", "langchain", "langgraph", "docker", "async", "pytest", "testing", "sqlalchemy", "alembic", "jwt", "auth", "database"]
 }

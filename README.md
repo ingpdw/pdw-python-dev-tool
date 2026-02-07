@@ -1,4 +1,4 @@
-# PDW Python Dev Tools Marketplace
+# Python Dev Tools Marketplace
 
 Python/FastAPI 풀스택 개발을 위한 Claude Code 플러그인 마켓플레이스입니다.
 
@@ -77,22 +77,24 @@ claude --plugin-dir ./pdw-python-dev-tools-marketplace/plugins/pdw-python-dev-to
 
 ## 포함된 플러그인
 
-### pdw-python-dev-tools `v1.0.0`
+### pdw-python-dev-tools `v1.1.0`
 
-8개의 스킬, 1개의 커맨드, 1개의 에이전트를 포함하는 Python/FastAPI 풀스택 개발 플러그인입니다.
+10개의 스킬, 1개의 커맨드, 1개의 에이전트를 포함하는 Python/FastAPI 풀스택 개발 플러그인입니다.
 
-### Skills (8개)
+### Skills (10개)
 
 | Skill | Description | Assets / References |
 |-------|-------------|---------------------|
 | **package-managing** | Python 패키지/프로젝트 매니저 (uv 기반: init, add, sync, lock, run, 워크스페이스) | `pyproject-template.toml` |
-| **asgi-server** | ASGI 서버 설정 및 프로덕션 배포 (Uvicorn, Granian, Hypercorn, SSL/TLS, 프록시) | `deployment.md` |
+| **asgi-server** | ASGI 서버 설정, 리소스 제한, 프로덕션 배포 (Uvicorn, Granian, Hypercorn, SSL/TLS, 프록시) | `deployment.md` |
 | **app-scaffolding** | FastAPI 앱 스캐폴딩, 라우팅, 미들웨어, DI, 라이프스팬 관리 | `app-template/`, `routing-patterns.md`, `middleware.md`, `dependency-injection.md` |
 | **async-patterns** | Python async/await 패턴, TaskGroup, 동시성 프리미티브, 에러 핸들링 | `concurrency.md` |
 | **pydantic** | 데이터 검증, 직렬화, 모델 정의, BaseSettings, 커스텀 밸리데이터 | `validators.md` |
+| **database** | SQLAlchemy async 엔진/세션, 모델 정의, CRUD 패턴, Alembic 마이그레이션, 커넥션 풀 | - |
+| **auth-security** | OAuth2 + JWT 인증, 패스워드 해싱, RBAC, API Key 인증, 보안 베스트 프랙티스 | - |
 | **agent-workflow** | LangChain/LangGraph 에이전트 워크플로, 도구 호출, 스트리밍, 체크포인팅 | `graph-template.py`, `langgraph-workflows.md`, `tools.md` |
-| **docker-build** | Dockerfile 멀티스테이지 빌드, Docker Compose, 보안 강화, uv 통합 | `Dockerfile.fastapi`, `Dockerfile.dev`, `docker-compose.yml`, `.dockerignore` |
-| **test-runner** | pytest 기반 테스트 실행, 커버리지, 비동기 테스트, 파라미터화, 마커 | - |
+| **docker-build** | Dockerfile 멀티스테이지 빌드, Docker Compose, 보안 강화, 멀티아키텍처, uv 통합 | `Dockerfile.fastapi`, `Dockerfile.dev`, `docker-compose.yml`, `.dockerignore` |
+| **test-runner** | pytest 기반 테스트 실행, 커버리지, 비동기 테스트, fixture 스코프, 디버깅 | - |
 
 ### Command
 
@@ -120,6 +122,8 @@ Claude에게 관련 작업을 요청하면 스킬이 자동으로 활용됩니�
 - "FastAPI 프로젝트를 만들어줘" → **app-scaffolding** 스킬 활성화
 - "uv로 의존성 추가해줘" → **package-managing** 스킬 활성화
 - "Pydantic 모델 만들어줘" → **pydantic** 스킬 활성화
+- "데이터베이스 모델 만들어줘" → **database** 스킬 활성화
+- "로그인 기능 추가해줘" → **auth-security** 스킬 활성화
 - "Docker로 배포 설정해줘" → **docker-build** 스킬 활성화
 - "테스트 작성해줘" → **test-runner** 스킬 활성화
 - "LangGraph 에이전트 만들어줘" → **agent-workflow** 스킬 활성화
@@ -131,16 +135,21 @@ package-managing ──→ asgi-server ──→ docker-build
        │                  │                │
        ▼                  ▼                ▼
 app-scaffolding ──→ async-patterns    test-runner
-       │
-       ▼
-   pydantic ──→ agent-workflow
+       │                                   │
+       ▼                                   ▼
+   pydantic ──→ agent-workflow         database
+       │                                   │
+       ▼                                   ▼
+  auth-security ←─────────────────── database
 ```
 
 - **app-scaffolding** → pydantic (요청/응답 모델), async-patterns (비동기 핸들러)
 - **asgi-server** → docker-build (배포), package-managing (의존성 관리)
+- **database** → pydantic (스키마), app-scaffolding (DI), async-patterns (비동기 세션)
+- **auth-security** → database (유저 모델), pydantic (토큰 스키마), app-scaffolding (미들웨어)
 - **agent-workflow** → pydantic (구조화된 출력), async-patterns (동시성)
 - **docker-build** → asgi-server (서버 설정), package-managing (uv 통합)
-- **test-runner** → async-patterns (비동기 테스트), app-scaffolding (FastAPI 테스트)
+- **test-runner** → async-patterns (비동기 테스트), database (DB 테스트 fixture)
 
 ## 프로젝트 구조
 
@@ -193,6 +202,10 @@ app-scaffolding ──→ async-patterns    test-runner
 │           │   └── references/
 │           │       ├── langgraph-workflows.md
 │           │       └── tools.md
+│           ├── database/
+│           │   └── SKILL.md
+│           ├── auth-security/
+│           │   └── SKILL.md
 │           ├── docker-build/
 │           │   ├── SKILL.md
 │           │   └── assets/

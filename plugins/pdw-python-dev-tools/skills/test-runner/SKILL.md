@@ -369,6 +369,71 @@ project/
 └── pyproject.toml
 ```
 
+## Fixture Scope
+
+Control how often a fixture is created with the `scope` parameter:
+
+```python
+@pytest.fixture(scope="function")  # default: new instance per test
+def db_session():
+    ...
+
+@pytest.fixture(scope="module")    # shared across tests in one module
+def db_engine():
+    ...
+
+@pytest.fixture(scope="session")   # shared across the entire test session
+def app():
+    return create_app()
+```
+
+| Scope      | Lifetime                          | Use Case                                |
+|------------|-----------------------------------|-----------------------------------------|
+| `function` | One per test function (default)   | Mutable state, per-test isolation       |
+| `class`    | One per test class                | Shared setup within a test class        |
+| `module`   | One per test module               | Expensive resources (DB engine, client) |
+| `session`  | One per entire test session       | Immutable globals, app factory          |
+
+Use the narrowest scope that avoids unnecessary recreation. Async fixtures follow the same scoping rules with `pytest-asyncio`.
+
+## Dependency Override Cleanup
+
+When overriding FastAPI dependencies in tests, always clean up to prevent test pollution:
+
+```python
+@pytest.fixture
+def app():
+    app = create_app()
+    app.dependency_overrides[get_db] = lambda: fake_db
+    yield app
+    app.dependency_overrides.clear()  # CRITICAL: prevent leaking to next test
+```
+
+Alternatively, use `autouse` fixtures for automatic cleanup:
+
+```python
+@pytest.fixture(autouse=True)
+def _cleanup_overrides(app):
+    yield
+    app.dependency_overrides.clear()
+```
+
+## Debugging Tests
+
+```bash
+# Drop into debugger on failure
+uv run pytest --pdb
+
+# Drop into debugger at first line of each test
+uv run pytest --trace
+
+# Show full diff for assertion errors
+uv run pytest -vv
+
+# Enable asyncio debug mode
+PYTHONASYNCIODEBUG=1 uv run pytest
+```
+
 ## Best Practices
 
 1. **Name tests clearly**: `test_<what>_<condition>_<expected>` (e.g., `test_create_user_empty_name_raises_error`)

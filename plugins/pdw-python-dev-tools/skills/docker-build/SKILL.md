@@ -185,6 +185,13 @@ RUN useradd --create-home --shell /bin/bash appuser
 USER appuser
 ```
 
+For stricter security, use a numeric UID and no login shell:
+
+```dockerfile
+RUN adduser --system --uid 1001 --no-create-home appuser
+USER 1001
+```
+
 ### Minimal Packages
 
 Do not install editors, debug tools, or documentation packages in the
@@ -214,7 +221,14 @@ detect unresponsive containers and restart them automatically.
 
 ```dockerfile
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-  CMD ["python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/health')"]
+  CMD ["python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/health')"] || exit 1
+```
+
+If `curl` is available in the runtime image, prefer the simpler form:
+
+```dockerfile
+HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
+  CMD curl -f http://localhost:8000/health || exit 1
 ```
 
 Ensure the FastAPI application exposes a lightweight `/health` endpoint that
@@ -416,6 +430,43 @@ volumes:
 6. Add a thorough `.dockerignore` to minimize the build context.
 7. Compile bytecode at build time (`UV_COMPILE_BYTECODE=1`) and skip `.pyc`
    generation at runtime (`PYTHONDONTWRITEBYTECODE=1`).
+
+---
+
+## Multi-Architecture Builds
+
+Build images for multiple platforms using `docker buildx`:
+
+```bash
+# Create a buildx builder
+docker buildx create --name multiarch --use
+
+# Build and push for amd64 and arm64
+docker buildx build --platform linux/amd64,linux/arm64 -t myapp:latest --push .
+```
+
+When using multi-arch builds, ensure all base images support the target platforms. Avoid architecture-specific binaries in `COPY` instructions.
+
+---
+
+## BuildKit Secrets
+
+Mount secrets at build time without baking them into image layers:
+
+```dockerfile
+# syntax=docker/dockerfile:1
+RUN --mount=type=secret,id=pip_index_url \
+  PIP_INDEX_URL=$(cat /run/secrets/pip_index_url) \
+  uv sync --frozen --no-dev
+```
+
+Pass the secret at build time:
+
+```bash
+docker build --secret id=pip_index_url,env=PIP_INDEX_URL .
+```
+
+Secrets are available only during the `RUN` instruction and never persist in the image history.
 
 ---
 
