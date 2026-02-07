@@ -4,7 +4,7 @@ Python/FastAPI 풀스택 개발을 위한 Claude Code 플러그인 마켓플레�
 
 ## 포함된 플러그인
 
-### pdw-python-dev-tool `v1.0.0`
+### pdw-python-dev-tools `v1.0.0`
 
 8개의 스킬, 1개의 커맨드, 1개의 에이전트를 포함하는 Python/FastAPI 풀스택 개발 플러그인입니다.
 
@@ -40,10 +40,10 @@ Python/FastAPI 풀스택 개발을 위한 Claude Code 플러그인 마켓플레�
 
 ```json
 {
-  "claude-python-fastapi-marketplace": {
+  "pdw-python-dev-toolss-marketplace": {
     "source": {
       "source": "github",
-      "repo": "ingpdw/claude-python-fastapi-marketplace"
+      "repo": "ingpdw/pdw-python-dev-toolss-marketplace"
     }
   }
 }
@@ -52,14 +52,14 @@ Python/FastAPI 풀스택 개발을 위한 Claude Code 플러그인 마켓플레�
 ### 플러그인 설치
 
 ```
-/plugin install pdw-python-dev-tool@claude-python-fastapi-marketplace
+/plugin install pdw-python-dev-tools@pdw-python-dev-toolss-marketplace
 ```
 
 ### 로컬 테스트
 
 ```bash
-git clone https://github.com/ingpdw/claude-python-fastapi-marketplace.git
-claude --plugin-dir ./claude-python-fastapi-marketplace/plugins/pdw-python-dev-tool
+git clone https://github.com/ingpdw/pdw-python-dev-toolss-marketplace.git
+claude --plugin-dir ./pdw-python-dev-toolss-marketplace/plugins/pdw-python-dev-tools
 ```
 
 ## 프로젝트 구조
@@ -69,7 +69,7 @@ claude --plugin-dir ./claude-python-fastapi-marketplace/plugins/pdw-python-dev-t
 ├── .claude-plugin/
 │   └── marketplace.json                    # 마켓플레이스 메타데이터
 ├── plugins/
-│   └── pdw-python-dev-tool/                # 메인 플러그인
+│   └── pdw-python-dev-tools/                # 메인 플러그인
 │       ├── .claude-plugin/
 │       │   └── plugin.json                 # 플러그인 설정 (v1.0.0)
 │       ├── commands/

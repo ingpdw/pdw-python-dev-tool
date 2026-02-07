@@ -1,5 +1,5 @@
 {
-  "name": "pdw-python-dev-tool",
+  "name": "pdw-python-dev-tools",
   "version": "1.0.0",
   "description": "Python/FastAPI full-stack development skills: package-managing, asgi-server, app-scaffolding, async/await, Pydantic, agent-workflow, Docker build, and test-runner",
   "author": {
