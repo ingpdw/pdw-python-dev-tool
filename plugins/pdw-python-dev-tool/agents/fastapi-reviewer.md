@@ -40,7 +40,7 @@ Consult `${CLAUDE_PLUGIN_ROOT}/skills/async-patterns/SKILL.md` for async pattern
 - Verify proper use of `Depends()` for shared logic
 - Check `BackgroundTasks` usage for fire-and-forget operations
 
-Consult `${CLAUDE_PLUGIN_ROOT}/skills/fastapi/SKILL.md` for FastAPI patterns.
+Consult `${CLAUDE_PLUGIN_ROOT}/skills/app-scaffolding/SKILL.md` for FastAPI patterns.
 
 ### 3. Pydantic Models
 
@@ -62,7 +62,7 @@ Consult `${CLAUDE_PLUGIN_ROOT}/skills/pydantic/SKILL.md` for Pydantic patterns.
 - Ensure auth dependencies are applied to all protected routes
 - Check for unnecessary dependency nesting
 
-Consult `${CLAUDE_PLUGIN_ROOT}/skills/fastapi/references/dependency-injection.md`.
+Consult `${CLAUDE_PLUGIN_ROOT}/skills/app-scaffolding/references/dependency-injection.md`.
 
 ### 5. Security
 

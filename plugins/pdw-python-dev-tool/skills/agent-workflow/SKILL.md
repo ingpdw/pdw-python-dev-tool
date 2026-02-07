@@ -1,5 +1,5 @@
 ---
-name: langchain-langgraph
+name: agent-workflow
 description: >
   Guides the agent through building LLM-powered applications with LangChain and
   stateful agent workflows with LangGraph. Triggered when the user asks to

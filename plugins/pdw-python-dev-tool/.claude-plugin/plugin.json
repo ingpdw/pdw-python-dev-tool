@@ -1,0 +1,10 @@
+{
+  "name": "pdw-python-dev-tool",
+  "version": "1.0.0",
+  "description": "Python/FastAPI full-stack development skills: package-managing, asgi-server, app-scaffolding, async/await, Pydantic, agent-workflow, Docker build, and test-runner",
+  "author": {
+    "name": "pdw"
+  },
+  "license": "MIT",
+  "keywords": ["python", "fastapi", "uv", "uvicorn", "pydantic", "langchain", "langgraph", "docker", "async", "pytest", "testing"]
+}

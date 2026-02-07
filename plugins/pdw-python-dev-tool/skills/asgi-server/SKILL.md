@@ -1,11 +1,11 @@
 ---
-name: uvicorn
+name: asgi-server
 description: >
-  Guides the agent through running and configuring Uvicorn, the lightning-fast ASGI
-  server for Python web applications. Triggered when users say "run a FastAPI app",
+  Guides the agent through running and configuring ASGI servers (Uvicorn, Granian, Hypercorn)
+  for Python web applications. Triggered when users say "run a FastAPI app",
   "configure uvicorn", "set up ASGI server", "deploy with uvicorn", "configure workers",
   "set up SSL/TLS", "run development server", "configure hot reload", or mention
-  uvicorn, ASGI server, production deployment, or server configuration.
+  ASGI server, production deployment, server configuration, uvicorn, granian, or hypercorn.
 version: 1.0.0
 ---
 

@@ -25,10 +25,10 @@ Ask the user for the following project details (skip if provided as arguments):
 
 ### Phase 2: Initialize Project with uv
 
-Consult the `uv` skill at `${CLAUDE_PLUGIN_ROOT}/skills/uv/SKILL.md` for project initialization patterns.
+Consult the `package-managing` skill at `${CLAUDE_PLUGIN_ROOT}/skills/package-managing/SKILL.md` for project initialization patterns.
 
 1. Run `uv init --app <project-name>`
-2. Configure `pyproject.toml` based on the template at `${CLAUDE_PLUGIN_ROOT}/skills/uv/assets/pyproject-template.toml`
+2. Configure `pyproject.toml` based on the template at `${CLAUDE_PLUGIN_ROOT}/skills/package-managing/assets/pyproject-template.toml`
 3. Add dependencies based on selected features:
    - **Core**: fastapi, uvicorn[standard], pydantic, pydantic-settings, httpx
    - **Database (PostgreSQL)**: sqlalchemy[asyncio], asyncpg, alembic
@@ -40,9 +40,9 @@ Consult the `uv` skill at `${CLAUDE_PLUGIN_ROOT}/skills/uv/SKILL.md` for project
 
 ### Phase 3: Create Application Structure
 
-Consult the `fastapi` skill at `${CLAUDE_PLUGIN_ROOT}/skills/fastapi/SKILL.md` for application patterns.
+Consult the `app-scaffolding` skill at `${CLAUDE_PLUGIN_ROOT}/skills/app-scaffolding/SKILL.md` for application patterns.
 
-Use templates from `${CLAUDE_PLUGIN_ROOT}/skills/fastapi/assets/app-template/` as the base.
+Use templates from `${CLAUDE_PLUGIN_ROOT}/skills/app-scaffolding/assets/app-template/` as the base.
 
 Create the following structure:
 
@@ -91,9 +91,9 @@ If database integration was selected:
 
 ### Phase 6: Add LangChain/LangGraph (if selected)
 
-Consult the `langchain-langgraph` skill at `${CLAUDE_PLUGIN_ROOT}/skills/langchain-langgraph/SKILL.md`.
+Consult the `agent-workflow` skill at `${CLAUDE_PLUGIN_ROOT}/skills/agent-workflow/SKILL.md`.
 
-Use the template at `${CLAUDE_PLUGIN_ROOT}/skills/langchain-langgraph/assets/graph-template.py`.
+Use the template at `${CLAUDE_PLUGIN_ROOT}/skills/agent-workflow/assets/graph-template.py`.
 
 - Create `agents/` directory with agent graph definition
 - Create tool definitions

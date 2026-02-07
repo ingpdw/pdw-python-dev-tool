@@ -1,5 +1,5 @@
 ---
-name: uv
+name: package-managing
 description: >
   Guides the agent through Python project management with uv, the fast Rust-based
   package and project manager. Triggered when users say "create a Python project",

@@ -1,13 +1,13 @@
 ---
-name: fastapi
+name: app-scaffolding
 description: >
-  Guides the agent through building FastAPI applications, including API routes,
-  request/response models, path and query parameters, dependency injection,
-  middleware, error handling, and project structure. Triggered when the user asks
-  to "create a FastAPI app", "add an API endpoint", "create a router",
-  "add middleware", "implement dependency injection", "handle errors",
-  "set up CORS", "create background tasks", "implement WebSocket",
-  "structure a FastAPI project", or "add authentication".
+  Guides the agent through scaffolding and building FastAPI applications, including
+  project structure, API routes, request/response models, path and query parameters,
+  dependency injection, middleware, error handling, and boilerplate generation.
+  Triggered when the user asks to "scaffold a FastAPI project", "create a FastAPI app",
+  "add an API endpoint", "create a router", "add middleware", "implement dependency injection",
+  "handle errors", "set up CORS", "create background tasks", "implement WebSocket",
+  "structure a FastAPI project", "generate boilerplate", or "add authentication".
 version: 1.0.0
 ---
 
