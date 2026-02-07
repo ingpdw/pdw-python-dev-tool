@@ -1,0 +1,95 @@
+# =============================================================================
+# Production Multi-Stage Dockerfile for FastAPI with uv
+# =============================================================================
+# Stage 1 (builder): Install dependencies into a virtual environment.
+# Stage 2 (runtime): Copy only the venv and app source into a clean image.
+# =============================================================================
+
+# ---------------------------------------------------------------------------
+# Build arguments
+# ---------------------------------------------------------------------------
+ARG PYTHON_VERSION=3.12
+
+# ===========================================================================
+# Stage 1 -- Builder
+# ===========================================================================
+FROM python:${PYTHON_VERSION}-slim AS builder
+
+# Install uv from the official image (static binary, no pip needed).
+COPY --from=ghcr.io/astral-sh/uv /uv /usr/local/bin/uv
+
+# Compile Python files to bytecode for faster cold starts.
+ENV UV_COMPILE_BYTECODE=1
+
+# Use copy mode so the venv is self-contained and portable across stages.
+ENV UV_LINK_MODE=copy
+
+WORKDIR /app
+
+# Copy dependency manifests first to maximise layer cache hits.
+# These files change far less often than the application source code.
+COPY pyproject.toml uv.lock ./
+
+# Install production dependencies only (no dev extras, no project itself).
+RUN uv sync --frozen --no-dev --no-install-project
+
+# Copy the full application source, then finalise the install so the project
+# package is registered in the venv.
+COPY . .
+RUN uv sync --frozen --no-dev
+
+# ===========================================================================
+# Stage 2 -- Runtime
+# ===========================================================================
+FROM python:${PYTHON_VERSION}-slim AS runtime
+
+# ---------------------------------------------------------------------------
+# Labels (OCI standard)
+# ---------------------------------------------------------------------------
+LABEL org.opencontainers.image.title="fastapi-app"
+LABEL org.opencontainers.image.description="Production FastAPI application"
+
+# ---------------------------------------------------------------------------
+# Python environment variables
+# ---------------------------------------------------------------------------
+# Send stdout/stderr to the terminal without buffering.
+ENV PYTHONUNBUFFERED=1
+
+# Do not generate .pyc files at runtime (bytecode was compiled at build time).
+ENV PYTHONDONTWRITEBYTECODE=1
+
+WORKDIR /app
+
+# ---------------------------------------------------------------------------
+# Copy artefacts from the builder
+# ---------------------------------------------------------------------------
+# Virtual environment with all production dependencies.
+COPY --from=builder /app/.venv /app/.venv
+
+# Application source code.
+COPY --from=builder /app/src /app/src
+
+# Put the venv's bin directory on PATH so `uvicorn` is found directly.
+ENV PATH="/app/.venv/bin:$PATH"
+
+# ---------------------------------------------------------------------------
+# Security -- run as a non-root user
+# ---------------------------------------------------------------------------
+RUN useradd --create-home --shell /bin/bash appuser
+USER appuser
+
+# ---------------------------------------------------------------------------
+# Expose the default application port
+# ---------------------------------------------------------------------------
+EXPOSE 8000
+
+# ---------------------------------------------------------------------------
+# Health check -- requires a /health endpoint in the FastAPI app
+# ---------------------------------------------------------------------------
+HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
+  CMD ["python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/health')"]
+
+# ---------------------------------------------------------------------------
+# Entrypoint -- use exec form so uvicorn receives SIGTERM directly
+# ---------------------------------------------------------------------------
+CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]

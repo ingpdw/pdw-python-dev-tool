@@ -1,0 +1,107 @@
+# =============================================================================
+# Docker Compose -- FastAPI + PostgreSQL + Redis
+# =============================================================================
+# Production-oriented stack. For development overrides (hot reload, bind
+# mounts), create a docker-compose.override.yml alongside this file:
+#
+#   # docker-compose.override.yml
+#   services:
+#     app:
+#       build:
+#         dockerfile: Dockerfile.dev
+#       volumes:
+#         - .:/app
+#         - /app/.venv
+#       environment:
+#         - LOG_LEVEL=debug
+# =============================================================================
+
+services:
+  # ---------------------------------------------------------------------------
+  # FastAPI application
+  # ---------------------------------------------------------------------------
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile.fastapi
+    ports:
+      - "8000:8000"
+    env_file:
+      - .env
+    environment:
+      - DATABASE_URL=postgresql+asyncpg://postgres:postgres@db:5432/app
+      - REDIS_URL=redis://redis:6379/0
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "python",
+          "-c",
+          "import urllib.request; urllib.request.urlopen('http://localhost:8000/health')",
+        ]
+      interval: 30s
+      timeout: 5s
+      start_period: 10s
+      retries: 3
+    networks:
+      - backend
+    restart: unless-stopped
+
+  # ---------------------------------------------------------------------------
+  # PostgreSQL database
+  # ---------------------------------------------------------------------------
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: app
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    ports:
+      - "5432:5432"
+    networks:
+      - backend
+    restart: unless-stopped
+
+  # ---------------------------------------------------------------------------
+  # Redis cache / message broker
+  # ---------------------------------------------------------------------------
+  redis:
+    image: redis:7-alpine
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    ports:
+      - "6379:6379"
+    networks:
+      - backend
+    restart: unless-stopped
+
+# =============================================================================
+# Volumes -- persist data across container recreations
+# =============================================================================
+volumes:
+  postgres_data:
+  redis_data:
+
+# =============================================================================
+# Networks -- isolate inter-service traffic
+# =============================================================================
+networks:
+  backend:
+    driver: bridge

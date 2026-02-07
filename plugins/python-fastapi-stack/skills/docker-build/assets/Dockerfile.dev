@@ -1,0 +1,57 @@
+# =============================================================================
+# Development Dockerfile for FastAPI with uv
+# =============================================================================
+# Single-stage build with all dependencies (including dev extras).
+# Source code is NOT copied -- mount the project directory as a bind volume
+# so that file changes trigger uvicorn's hot reload.
+# =============================================================================
+
+ARG PYTHON_VERSION=3.12
+
+FROM python:${PYTHON_VERSION}-slim
+
+# ---------------------------------------------------------------------------
+# Install uv from the official image
+# ---------------------------------------------------------------------------
+COPY --from=ghcr.io/astral-sh/uv /uv /usr/local/bin/uv
+
+# ---------------------------------------------------------------------------
+# Python environment variables
+# ---------------------------------------------------------------------------
+ENV PYTHONUNBUFFERED=1
+ENV PYTHONDONTWRITEBYTECODE=1
+
+WORKDIR /app
+
+# ---------------------------------------------------------------------------
+# Install ALL dependencies (including dev) from the lockfile
+# ---------------------------------------------------------------------------
+# Copy only the dependency manifests so the layer is cached until they change.
+COPY pyproject.toml uv.lock ./
+
+# Sync all dependencies including dev extras. The --frozen flag ensures the
+# lockfile is used as-is without re-resolution.
+RUN uv sync --frozen --no-install-project
+
+# ---------------------------------------------------------------------------
+# Do NOT copy application source here.
+# Instead, bind-mount the project directory at runtime:
+#
+#   docker run -v "$(pwd)":/app -p 8000:8000 myapp-dev
+#
+# Or in docker-compose.yml / docker-compose.override.yml:
+#
+#   volumes:
+#     - .:/app
+#     - /app/.venv   # shadow the venv so the host .venv is not overwritten
+# ---------------------------------------------------------------------------
+
+# ---------------------------------------------------------------------------
+# Expose the default application port
+# ---------------------------------------------------------------------------
+EXPOSE 8000
+
+# ---------------------------------------------------------------------------
+# Entrypoint -- enable --reload for hot reload during development
+# ---------------------------------------------------------------------------
+CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000", "--reload"]

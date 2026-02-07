@@ -1,0 +1,23 @@
+{
+  "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
+  "name": "claude-python-fastapi-marketplace",
+  "description": "Python/FastAPI 풀스택 개발을 위한 Claude Code 플러그인 마켓플레이스. uv, uvicorn, FastAPI, async/await, Pydantic, LangChain/LangGraph, Docker 스킬을 포함합니다.",
+  "owner": {
+    "name": "ingpdw",
+    "email": "ingpdw@users.noreply.github.com"
+  },
+  "plugins": [
+    {
+      "name": "python-fastapi-stack",
+      "description": "Python/FastAPI full-stack development skills: uv, uvicorn, FastAPI, async/await, Pydantic, LangChain/LangGraph, and Docker build. 7 skills, 1 command (/scaffold-fastapi), 1 agent (fastapi-reviewer).",
+      "version": "1.0.0",
+      "author": {
+        "name": "ingpdw"
+      },
+      "source": "./plugins/python-fastapi-stack",
+      "category": "development",
+      "homepage": "https://github.com/ingpdw/claude-python-fastapi-marketplace",
+      "strict": false
+    }
+  ]
+}
