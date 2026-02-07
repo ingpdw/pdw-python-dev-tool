@@ -1,23 +1,28 @@
 {
-  "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
-  "name": "pdw-python-dev-toolss-marketplace",
-  "description": "Python/FastAPI 풀스택 개발을 위한 Claude Code 플러그인 마켓플레이스. package-managing, asgi-server, app-scaffolding, async/await, Pydantic, agent-workflow, Docker, test-runner 스킬을 포함합니다.",
+  "name": "pdw-python-dev-tools-marketplace",
   "owner": {
     "name": "ingpdw",
     "email": "ingpdw@users.noreply.github.com"
   },
+  "metadata": {
+    "description": "Python/FastAPI 풀스택 개발을 위한 Claude Code 플러그인 마켓플레이스. package-managing, asgi-server, app-scaffolding, async-patterns, pydantic, agent-workflow, docker-build, test-runner 스킬을 포함합니다.",
+    "version": "1.0.0"
+  },
   "plugins": [
     {
       "name": "pdw-python-dev-tools",
-      "description": "Python/FastAPI full-stack development skills: package-managing, asgi-server, app-scaffolding, async-patterns, pydantic, agent-workflow, docker-build, and test-runner. 8 skills, 1 command (/scaffold-fastapi), 1 agent (fastapi-reviewer).",
+      "source": "./plugins/pdw-python-dev-tools",
+      "description": "Python/FastAPI full-stack development plugin with 8 skills, 1 command (/scaffold-fastapi), and 1 agent (fastapi-reviewer)",
       "version": "1.0.0",
       "author": {
         "name": "ingpdw"
       },
-      "source": "./plugins/pdw-python-dev-tools",
+      "homepage": "https://github.com/ingpdw/pdw-python-dev-tools-marketplace",
+      "repository": "https://github.com/ingpdw/pdw-python-dev-tools-marketplace",
+      "license": "MIT",
+      "keywords": ["python", "fastapi", "uv", "uvicorn", "pydantic", "langchain", "langgraph", "docker", "async", "pytest"],
       "category": "development",
-      "homepage": "https://github.com/ingpdw/claude-python-fastapi-marketplace",
-      "strict": false
+      "tags": ["python", "fastapi", "full-stack", "backend", "api"]
     }
   ]
 }
